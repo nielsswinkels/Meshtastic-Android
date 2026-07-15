@@ -46,4 +46,13 @@ class LastHeardFilterTest {
         assertEquals(86400L, LastHeardFilter.OneDay.seconds)
         assertEquals(172800L, LastHeardFilter.TwoDays.seconds)
     }
+
+    @Test
+    fun entries_ascendByDurationWithAnyAtMaxEnd() {
+        // The filter slider renders entries in declaration order; the unbounded
+        // "Any" option must sit at the max end of the scale, after all durations.
+        assertEquals(LastHeardFilter.Any, LastHeardFilter.entries.last())
+        val durations = LastHeardFilter.entries.dropLast(1).map { it.seconds }
+        assertEquals(durations.sorted(), durations)
+    }
 }

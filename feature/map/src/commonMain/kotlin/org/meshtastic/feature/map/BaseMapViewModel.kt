@@ -310,11 +310,13 @@ fun tracerouteNodeSelection(
 
 @Suppress("MagicNumber")
 enum class LastHeardFilter(val label: StringResource, val seconds: Long) {
-    Any(Res.string.any, 0L),
+    // Declaration order is the filter slider's scale: durations ascending, with the
+    // unbounded "Any" at the max end.
     OneHour(Res.string.one_hour, 3600L),
     EightHours(Res.string.eight_hours, 28800L),
     OneDay(Res.string.one_day, 86400L),
     TwoDays(Res.string.two_days, 172800L),
+    Any(Res.string.any, 0L),
     ;
 
     companion object {

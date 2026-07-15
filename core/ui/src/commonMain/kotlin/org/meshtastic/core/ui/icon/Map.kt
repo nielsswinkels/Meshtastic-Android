@@ -26,8 +26,8 @@ import org.meshtastic.core.resources.ic_lens
 import org.meshtastic.core.resources.ic_location_disabled
 import org.meshtastic.core.resources.ic_location_on
 import org.meshtastic.core.resources.ic_map
+import org.meshtastic.core.resources.ic_map_compass
 import org.meshtastic.core.resources.ic_my_location
-import org.meshtastic.core.resources.ic_navigation
 import org.meshtastic.core.resources.ic_pin_drop
 import org.meshtastic.core.resources.ic_place
 import org.meshtastic.core.resources.ic_route
@@ -48,7 +48,7 @@ val MeshtasticIcons.TripOrigin: ImageVector
 val MeshtasticIcons.CalendarMonth: ImageVector
     @Composable get() = vectorResource(Res.drawable.ic_calendar_month)
 val MeshtasticIcons.MapCompass: ImageVector
-    @Composable get() = vectorResource(Res.drawable.ic_navigation)
+    @Composable get() = vectorResource(Res.drawable.ic_map_compass)
 val MeshtasticIcons.Tune: ImageVector
     @Composable get() = vectorResource(Res.drawable.ic_tune)
 val MeshtasticIcons.Place: ImageVector

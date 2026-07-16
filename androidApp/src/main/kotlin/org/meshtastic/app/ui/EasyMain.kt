@@ -18,6 +18,7 @@
 
 package org.meshtastic.app.ui
 
+import android.content.Context
 import android.content.Intent
 import android.provider.Settings
 import androidx.compose.animation.AnimatedVisibility
@@ -31,8 +32,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation3.runtime.NavBackStack
+import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
+import kotlinx.coroutines.flow.Flow
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import org.meshtastic.core.model.ConnectionState
@@ -42,7 +46,9 @@ import org.meshtastic.core.navigation.rememberMultiBackstack
 import org.meshtastic.core.repository.PlatformAnalytics
 import org.meshtastic.core.ui.component.MeshtasticAppShell
 import org.meshtastic.core.ui.component.MeshtasticNavDisplay
+import org.meshtastic.core.ui.component.ScrollToTopEvent
 import org.meshtastic.core.ui.component.easy.EasyDisconnectedBanner
+import org.meshtastic.core.ui.component.easy.EasyFallbackScreen
 import org.meshtastic.core.ui.component.easy.EasyNavigationSuite
 import org.meshtastic.core.ui.viewmodel.UIViewModel
 import org.meshtastic.feature.connections.navigation.connectionsGraph
@@ -95,34 +101,46 @@ fun EasyMainScreen(modifier: Modifier = Modifier) {
                 }
                 MeshtasticNavDisplay(
                     multiBackstack = multiBackstack,
-                    entryProvider =
-                    entryProvider<NavKey> {
-                        easyContactsGraph(backStack, scrollToTopEvents)
-                        easyNodesGraph(backStack, scrollToTopEvents)
-                        mapGraph(backStack)
-                        easySettingsGraph(
-                            backStack = backStack,
-                            onOpenNotificationSettings = {
-                                val intent =
-                                    Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).apply {
-                                        putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName)
-                                    }
-                                context.startActivity(intent)
-                            },
-                        )
-                        connectionsGraph(backStack)
-                        // Not reachable from Easy screens, but registered so externally-triggered routes
-                        // (meshtastic:// deep links, USB DFU, docs links) render instead of crashing NavDisplay.
-                        channelsGraph(backStack)
-                        discoveryGraph(backStack)
-                        docsEntries(backStack)
-                        firmwareGraph(backStack)
-                        wifiProvisionGraph(backStack)
-                    },
+                    entryProvider = easyEntryProvider(backStack, scrollToTopEvents, context),
                     modifier = Modifier.fillMaxWidth().weight(1f),
                     analytics = koinInject<PlatformAnalytics>(),
                 )
             }
         }
     }
+}
+
+/** The Easy shell's route table: simplified renderings for the main tabs plus every externally-triggerable graph. */
+private fun easyEntryProvider(
+    backStack: NavBackStack<NavKey>,
+    scrollToTopEvents: Flow<ScrollToTopEvent>,
+    context: Context,
+): (NavKey) -> NavEntry<NavKey> = entryProvider<NavKey>(
+    // Safety net for technical routes Easy mode doesn't register (settings sub-screens, metric logs):
+    // render a friendly dead end instead of crashing on an unknown key.
+    fallback = { unknownKey ->
+        NavEntry(unknownKey) { EasyFallbackScreen(onGoBack = { backStack.removeLastOrNull() }) }
+    },
+) {
+    easyContactsGraph(backStack, scrollToTopEvents)
+    easyNodesGraph(backStack, scrollToTopEvents)
+    mapGraph(backStack)
+    easySettingsGraph(
+        backStack = backStack,
+        onOpenNotificationSettings = {
+            val intent =
+                Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).apply {
+                    putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName)
+                }
+            context.startActivity(intent)
+        },
+    )
+    connectionsGraph(backStack)
+    // Not reachable from Easy screens, but registered so externally-triggered routes
+    // (meshtastic:// deep links, USB DFU, docs links) render instead of crashing NavDisplay.
+    channelsGraph(backStack)
+    discoveryGraph(backStack)
+    docsEntries(backStack)
+    firmwareGraph(backStack)
+    wifiProvisionGraph(backStack)
 }

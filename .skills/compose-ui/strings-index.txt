@@ -528,12 +528,14 @@ easily_set_up_private_mesh_networks
 ### EASY ###
 easy_disconnected_body
 easy_disconnected_title
+easy_go_back
 easy_mode
 easy_mode_description
 easy_mode_enable_message
 easy_mode_enable_title
 easy_no_people_yet
 easy_open_connection_settings
+easy_screen_unavailable
 easy_switch_to_advanced
 easy_switch_to_advanced_message
 easy_your_device

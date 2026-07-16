@@ -27,6 +27,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import org.meshtastic.core.model.ConnectionState
@@ -35,6 +36,7 @@ import org.meshtastic.core.navigation.MultiBackstack
 import org.meshtastic.core.ui.component.MeshtasticAppShell
 import org.meshtastic.core.ui.component.MeshtasticNavDisplay
 import org.meshtastic.core.ui.component.easy.EasyDisconnectedBanner
+import org.meshtastic.core.ui.component.easy.EasyFallbackScreen
 import org.meshtastic.core.ui.component.easy.EasyNavigationSuite
 import org.meshtastic.core.ui.viewmodel.UIViewModel
 import org.meshtastic.feature.connections.navigation.connectionsGraph
@@ -82,7 +84,13 @@ fun DesktopEasyMainScreen(uiViewModel: UIViewModel, multiBackstack: MultiBacksta
                         )
                     }
                     val provider =
-                        entryProvider<NavKey> {
+                        entryProvider<NavKey>(
+                            // Safety net for technical routes Easy mode doesn't register (settings sub-screens,
+                            // metric logs): render a friendly dead end instead of crashing on an unknown key.
+                            fallback = { unknownKey ->
+                                NavEntry(unknownKey) { EasyFallbackScreen(onGoBack = { backStack.removeLastOrNull() }) }
+                            },
+                        ) {
                             easyContactsGraph(backStack, scrollToTopEvents)
                             easyNodesGraph(backStack, scrollToTopEvents)
                             mapGraph(backStack)

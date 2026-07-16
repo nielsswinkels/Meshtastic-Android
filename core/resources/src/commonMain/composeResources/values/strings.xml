@@ -552,12 +552,14 @@
     <!-- EASY -->
     <string name="easy_disconnected_body">Check that it\'s turned on and nearby.</string>
     <string name="easy_disconnected_title">Your Meshtastic device isn\'t connected</string>
+    <string name="easy_go_back">Go back</string>
     <string name="easy_mode">Easy mode</string>
     <string name="easy_mode_description">A simplified app with just chats, people, and the map. Great for family and friends who don\'t care about the technical details.</string>
     <string name="easy_mode_enable_message">The app will show only chats, people, the map, and a few settings. You can switch back at the bottom of Easy mode\'s settings.</string>
     <string name="easy_mode_enable_title">Switch to Easy mode?</string>
     <string name="easy_no_people_yet">No one has been heard on the mesh yet. People will appear here automatically.</string>
     <string name="easy_open_connection_settings">Connection settings</string>
+    <string name="easy_screen_unavailable">This screen isn\'t available in Easy mode. Switch to advanced mode from Settings to see it.</string>
     <string name="easy_switch_to_advanced">Switch to advanced mode</string>
     <string name="easy_switch_to_advanced_message">The advanced app shows every technical setting and detail. You can come back to Easy mode from its settings.</string>
     <string name="easy_your_device">Your device</string>

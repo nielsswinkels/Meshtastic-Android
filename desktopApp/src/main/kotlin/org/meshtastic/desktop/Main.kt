@@ -64,6 +64,7 @@ import coil3.request.crossfade
 import coil3.svg.SvgDecoder
 import coil3.util.DebugLogger
 import io.ktor.client.HttpClient
+import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.first
 import okio.Path.Companion.toPath
 import org.jetbrains.compose.resources.decodeToSvgPainter
@@ -79,6 +80,7 @@ import org.meshtastic.core.navigation.MultiBackstack
 import org.meshtastic.core.navigation.SettingsRoute
 import org.meshtastic.core.navigation.TopLevelDestination
 import org.meshtastic.core.navigation.rememberMultiBackstack
+import org.meshtastic.core.navigation.replaceAll
 import org.meshtastic.core.repository.Notification
 import org.meshtastic.core.repository.UiPrefs
 import org.meshtastic.core.resources.Res
@@ -366,6 +368,20 @@ private fun ApplicationScope.MeshtasticWindow(
                 else -> TopLevelDestination.Nodes.route
             },
         )
+
+    // The window shares one MultiBackstack across both shells, so on a mode flip drop any routes the other shell
+    // owned — the Easy entry provider can't render advanced-only sub-screens. drop(1) skips the initial value so
+    // normal startup keeps restored navigation state.
+    LaunchedEffect(multiBackstack) {
+        snapshotFlow { easyModeEnabled }
+            .drop(1)
+            .collect { easy ->
+                multiBackstack.backStacks.forEach { (root, stack) -> stack.replaceAll(listOf(root)) }
+                multiBackstack.navigateTopLevel(
+                    if (easy) TopLevelDestination.Messages.route else TopLevelDestination.Nodes.route,
+                )
+            }
+    }
 
     Window(
         onCloseRequest = onCloseRequest,

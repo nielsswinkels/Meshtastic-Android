@@ -48,7 +48,11 @@ fun MeshtasticAppShell(
     content: @Composable () -> Unit,
 ) {
     LaunchedEffect(uiViewModel) {
-        uiViewModel.navigationDeepLink.collect { navKeys -> multiBackstack.handleDeepLink(navKeys) }
+        uiViewModel.navigationDeepLink.collect { navKeys ->
+            multiBackstack.handleDeepLink(navKeys)
+            // Consume the replayed value so a future collector (mode flip, activity recreation) doesn't re-navigate.
+            uiViewModel.consumeNavigationDeepLinkReplay()
+        }
     }
 
     MeshtasticCommonAppSetup(

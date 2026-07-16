@@ -20,9 +20,11 @@ import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavKey
 import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
 import org.meshtastic.core.navigation.ConnectionsRoute
 import org.meshtastic.core.navigation.SettingsRoute
 import org.meshtastic.feature.settings.easy.EasySettingsScreen
+import org.meshtastic.feature.settings.radio.RadioConfigViewModel
 
 /**
  * Easy mode registration for the settings tab root: the same [SettingsRoute.Settings] key the full app uses, rendered
@@ -39,7 +41,9 @@ fun EntryProviderScope<NavKey>.easySettingsGraph(
         EasySettingsScreen(
             settingsViewModel = koinViewModel(),
             connectionsViewModel = koinViewModel(),
-            radioConfigViewModel = getRadioConfigViewModel(backStack),
+            // Always administer the LOCAL node: a stale SettingsRoute.Settings(destNum) from a remote-admin deep
+            // link must never make the Easy name editor send set_owner to someone else's node.
+            radioConfigViewModel = koinViewModel<RadioConfigViewModel>(key = "easy-local") { parametersOf(null) },
             onOpenConnections = { backStack.add(ConnectionsRoute.Connections()) },
             onOpenNotificationSettings = onOpenNotificationSettings,
         )

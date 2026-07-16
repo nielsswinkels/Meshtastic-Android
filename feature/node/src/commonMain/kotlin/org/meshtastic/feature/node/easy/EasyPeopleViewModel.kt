@@ -38,7 +38,7 @@ import org.meshtastic.feature.node.list.NodeFilterState
  */
 @KoinViewModel
 class EasyPeopleViewModel(
-    nodeRepository: NodeRepository,
+    private val nodeRepository: NodeRepository,
     getFilteredNodesUseCase: GetFilteredNodesUseCase,
     connectionStateProvider: ConnectionStateProvider,
     private val nodeManagementActions: NodeManagementActions,

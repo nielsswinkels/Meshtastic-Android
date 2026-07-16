@@ -20,6 +20,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation3.runtime.NavKey
 import co.touchlab.kermit.Logger
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -100,6 +101,16 @@ class UIViewModel(
 
     private val _navigationDeepLink = MutableSharedFlow<List<NavKey>>(replay = 1)
     val navigationDeepLink = _navigationDeepLink.asSharedFlow()
+
+    /**
+     * Drops the replayed deep link once a shell has handled it. The replay cache exists so a link that arrives before
+     * the shell mounts isn't lost — but without clearing it, every later collector (shell swap on an Easy/advanced mode
+     * flip, activity recreation) re-navigates to the stale target.
+     */
+    @OptIn(ExperimentalCoroutinesApi::class)
+    fun consumeNavigationDeepLinkReplay() {
+        _navigationDeepLink.resetReplayCache()
+    }
 
     /**
      * Unified handler for all Meshtastic deep links and OS intents.

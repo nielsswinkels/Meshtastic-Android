@@ -38,10 +38,15 @@ import org.meshtastic.core.ui.component.easy.EasyDisconnectedBanner
 import org.meshtastic.core.ui.component.easy.EasyNavigationSuite
 import org.meshtastic.core.ui.viewmodel.UIViewModel
 import org.meshtastic.feature.connections.navigation.connectionsGraph
+import org.meshtastic.feature.discovery.navigation.discoveryGraph
+import org.meshtastic.feature.docs.navigation.docsEntries
+import org.meshtastic.feature.firmware.navigation.firmwareGraph
 import org.meshtastic.feature.map.navigation.mapGraph
 import org.meshtastic.feature.messaging.navigation.easyContactsGraph
 import org.meshtastic.feature.node.navigation.easyNodesGraph
 import org.meshtastic.feature.settings.navigation.easySettingsGraph
+import org.meshtastic.feature.settings.radio.channel.channelsGraph
+import org.meshtastic.feature.wifiprovision.navigation.wifiProvisionGraph
 
 /**
  * Desktop Easy mode shell — the desktop counterpart of the Android `EasyMainScreen`: four friendly tabs over the same
@@ -68,7 +73,11 @@ fun DesktopEasyMainScreen(uiViewModel: UIViewModel, multiBackstack: MultiBacksta
                 Column(modifier = Modifier.fillMaxSize()) {
                     AnimatedVisibility(visible = connectionState is ConnectionState.Disconnected) {
                         EasyDisconnectedBanner(
-                            onConnectClick = { backStack.add(ConnectionsRoute.Connections()) },
+                            onConnectClick = {
+                                if (backStack.lastOrNull() !is ConnectionsRoute.Connections) {
+                                    backStack.add(ConnectionsRoute.Connections())
+                                }
+                            },
                             modifier = Modifier.fillMaxWidth(),
                         )
                     }
@@ -79,6 +88,13 @@ fun DesktopEasyMainScreen(uiViewModel: UIViewModel, multiBackstack: MultiBacksta
                             mapGraph(backStack)
                             easySettingsGraph(backStack)
                             connectionsGraph(backStack)
+                            // Not reachable from Easy screens, but registered so externally-triggered routes
+                            // (deep links, docs links) render instead of crashing NavDisplay.
+                            channelsGraph(backStack)
+                            discoveryGraph(backStack)
+                            docsEntries(backStack)
+                            firmwareGraph(backStack)
+                            wifiProvisionGraph(backStack)
                         }
                     MeshtasticNavDisplay(
                         multiBackstack = multiBackstack,

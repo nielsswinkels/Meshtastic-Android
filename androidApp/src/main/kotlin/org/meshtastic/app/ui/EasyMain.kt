@@ -46,10 +46,15 @@ import org.meshtastic.core.ui.component.easy.EasyDisconnectedBanner
 import org.meshtastic.core.ui.component.easy.EasyNavigationSuite
 import org.meshtastic.core.ui.viewmodel.UIViewModel
 import org.meshtastic.feature.connections.navigation.connectionsGraph
+import org.meshtastic.feature.discovery.navigation.discoveryGraph
+import org.meshtastic.feature.docs.navigation.docsEntries
+import org.meshtastic.feature.firmware.navigation.firmwareGraph
 import org.meshtastic.feature.map.navigation.mapGraph
 import org.meshtastic.feature.messaging.navigation.easyContactsGraph
 import org.meshtastic.feature.node.navigation.easyNodesGraph
 import org.meshtastic.feature.settings.navigation.easySettingsGraph
+import org.meshtastic.feature.settings.radio.channel.channelsGraph
+import org.meshtastic.feature.wifiprovision.navigation.wifiProvisionGraph
 
 /**
  * The Easy mode shell: the same app plumbing as [MainScreen] (deep links, alerts, snackbars, version check) with a
@@ -80,7 +85,11 @@ fun EasyMainScreen(modifier: Modifier = Modifier) {
             Column(modifier = Modifier.fillMaxSize().recalculateWindowInsets().safeDrawingPadding()) {
                 AnimatedVisibility(visible = connectionState is ConnectionState.Disconnected) {
                     EasyDisconnectedBanner(
-                        onConnectClick = { backStack.add(ConnectionsRoute.Connections()) },
+                        onConnectClick = {
+                            if (backStack.lastOrNull() !is ConnectionsRoute.Connections) {
+                                backStack.add(ConnectionsRoute.Connections())
+                            }
+                        },
                         modifier = Modifier.fillMaxWidth(),
                     )
                 }
@@ -102,6 +111,13 @@ fun EasyMainScreen(modifier: Modifier = Modifier) {
                             },
                         )
                         connectionsGraph(backStack)
+                        // Not reachable from Easy screens, but registered so externally-triggered routes
+                        // (meshtastic:// deep links, USB DFU, docs links) render instead of crashing NavDisplay.
+                        channelsGraph(backStack)
+                        discoveryGraph(backStack)
+                        docsEntries(backStack)
+                        firmwareGraph(backStack)
+                        wifiProvisionGraph(backStack)
                     },
                     modifier = Modifier.fillMaxWidth().weight(1f),
                     analytics = koinInject<PlatformAnalytics>(),

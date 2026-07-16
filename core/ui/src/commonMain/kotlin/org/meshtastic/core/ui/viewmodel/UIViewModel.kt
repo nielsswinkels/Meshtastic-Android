@@ -344,6 +344,8 @@ class UIViewModel(
         uiPrefs.setAppIntroCompleted(true)
     }
 
+    val easyModeEnabled: StateFlow<Boolean> = uiPrefs.easyModeEnabled
+
     companion object {
         private const val DEFAULT_BOOT_TTL = LockdownPassphraseStore.DEFAULT_BOOTS
     }

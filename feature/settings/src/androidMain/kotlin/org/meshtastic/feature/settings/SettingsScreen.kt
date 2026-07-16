@@ -75,6 +75,7 @@ import org.meshtastic.core.ui.icon.SettingsRemote
 import org.meshtastic.core.ui.icon.Wifi
 import org.meshtastic.feature.settings.component.AppInfoSection
 import org.meshtastic.feature.settings.component.AppearanceSection
+import org.meshtastic.feature.settings.component.EasyModeSection
 import org.meshtastic.feature.settings.component.ExpressiveSection
 import org.meshtastic.feature.settings.component.PersistenceSection
 import org.meshtastic.feature.settings.component.PrivacySection
@@ -260,6 +261,11 @@ fun SettingsScreen(
                 AppearanceSection(
                     onShowLanguagePicker = { showLanguagePickerDialog = true },
                     onShowThemePicker = { showThemePickerDialog = true },
+                )
+
+                EasyModeSection(
+                    easyModeEnabled = settingsViewModel.easyModeEnabled.collectAsStateWithLifecycle().value,
+                    onToggleEasyMode = settingsViewModel::setEasyModeEnabled,
                 )
 
                 ExpressiveSection(title = stringResource(Res.string.node_layout_section_title)) {

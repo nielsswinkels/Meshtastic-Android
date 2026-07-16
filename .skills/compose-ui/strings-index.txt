@@ -165,6 +165,7 @@ channel_name
 channel_url
 channel_utilization
 channels
+chats
 ### CHIRPY ###
 chirpy
 chirpy_assistant_title
@@ -524,6 +525,20 @@ download
 duplicated_public_key_title
 dynamic
 easily_set_up_private_mesh_networks
+### EASY ###
+easy_disconnected_body
+easy_disconnected_title
+easy_mode
+easy_mode_description
+easy_mode_enable_message
+easy_mode_enable_title
+easy_no_people_yet
+easy_open_connection_settings
+easy_switch_to_advanced
+easy_switch_to_advanced_message
+easy_your_device
+easy_your_name
+easy_your_name_hint
 echo_enabled
 edit
 edit_custom_tile_source
@@ -825,6 +840,7 @@ label_tiny_slow
 label_very_long_slow
 last_heard_filter_label
 last_position_update
+last_seen
 latest_alpha_firmware
 latest_stable_firmware
 latitude
@@ -1059,6 +1075,7 @@ mqtt_test_connection
 must_set_region
 must_update
 ### MUTE ###
+mute
 mute_1_week
 mute_8_hours
 mute_add
@@ -1080,7 +1097,9 @@ neighbor_info_config
 neighbor_info_enabled
 network
 network_layer_url_hint
+### NEW ###
 new_channel_rcvd
+new_chat
 new_messages_below
 new_node_seen
 new_nodes
@@ -1095,6 +1114,7 @@ no_devices_found
 no_files_manifested
 no_local_stats
 no_map_layers_loaded
+no_messages_yet
 no_network_devices_found
 no_network_devices_hint
 no_network_devices_seen
@@ -1224,10 +1244,12 @@ pax_wifi_marker
 paxcounter
 paxcounter_config
 paxcounter_enabled
+people
 periodic_position_broadcast
 permission_missing_31
 phone_location
 phone_location_description
+pin
 play
 plurals_hours
 plurals_minutes
@@ -1278,6 +1300,7 @@ proxy_to_client_enabled
 psk
 pt_BR
 ptt_pin
+public_channel
 public_key
 public_key_changed
 qr_code
@@ -1678,6 +1701,7 @@ unmessageable
 unmonitored_or_infrastructure
 unmute
 unmute_selected
+unpin
 unrecognized
 unset
 up_down_select_input_enabled

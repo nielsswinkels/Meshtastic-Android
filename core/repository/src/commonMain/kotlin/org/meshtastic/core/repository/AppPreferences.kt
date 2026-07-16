@@ -134,6 +134,22 @@ interface UiPrefs {
 
     fun setEventThemeEnabled(enabled: Boolean)
 
+    /**
+     * Whether the app renders the simplified Easy mode shell (chats/people/map/minimal settings) instead of the full
+     * UI. Default off so existing users see no change.
+     */
+    val easyModeEnabled: StateFlow<Boolean>
+
+    fun setEasyModeEnabled(enabled: Boolean)
+
+    /**
+     * Contact keys the user pinned to the top of the Easy mode chat list. The primary public channel ("0^all") is
+     * pinned by default until explicitly unpinned.
+     */
+    val pinnedContactKeys: StateFlow<Set<String>>
+
+    fun setContactPinned(contactKey: String, pinned: Boolean)
+
     /** Whether BLE scanning should auto-start when the Connections screen is opened. */
     val bleAutoScan: StateFlow<Boolean>
 

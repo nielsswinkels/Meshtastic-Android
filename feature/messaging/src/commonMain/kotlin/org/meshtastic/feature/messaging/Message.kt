@@ -576,7 +576,7 @@ private fun mentionOutputTransformation(nodesById: Map<String, Node>) = OutputTr
  */
 @Suppress("LongMethod", "CyclomaticComplexMethod") // Due to multiple parts of the OutlinedTextField
 @Composable
-private fun MessageInput(
+internal fun MessageInput(
     isEnabled: Boolean,
     isHomoglyphEncodingEnabled: Boolean,
     textFieldState: TextFieldState,

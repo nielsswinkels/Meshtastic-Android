@@ -35,6 +35,7 @@ import org.meshtastic.core.resources.ic_filter_alt
 import org.meshtastic.core.resources.ic_filter_alt_off
 import org.meshtastic.core.resources.ic_folder
 import org.meshtastic.core.resources.ic_folder_open
+import org.meshtastic.core.resources.ic_keep
 import org.meshtastic.core.resources.ic_list
 import org.meshtastic.core.resources.ic_mark_chat_read
 import org.meshtastic.core.resources.ic_more_vert
@@ -62,6 +63,8 @@ import org.meshtastic.core.resources.ic_upload
 
 val MeshtasticIcons.Add: ImageVector
     @Composable get() = vectorResource(Res.drawable.ic_add)
+val MeshtasticIcons.KeepPin: ImageVector
+    @Composable get() = vectorResource(Res.drawable.ic_keep)
 val MeshtasticIcons.AddReaction: ImageVector
     @Composable get() = vectorResource(Res.drawable.ic_add_reaction)
 val MeshtasticIcons.Close: ImageVector

@@ -59,6 +59,7 @@ import org.meshtastic.app.map.getMapViewProvider
 import org.meshtastic.app.map.sitePlannerAvailable
 import org.meshtastic.app.node.component.InlineMap
 import org.meshtastic.app.node.metrics.getTracerouteMapOverlayInsets
+import org.meshtastic.app.ui.EasyMainScreen
 import org.meshtastic.app.ui.MainScreen
 import org.meshtastic.core.barcode.rememberBarcodeScanner
 import org.meshtastic.core.navigation.DEEP_LINK_BASE_URI
@@ -157,16 +158,21 @@ class MainActivity : AppCompatActivity() {
             AppCompositionLocals {
                 AppTheme(dynamicColor = dynamic, darkTheme = dark) {
                     val appIntroCompleted by model.appIntroCompleted.collectAsStateWithLifecycle()
+                    val easyModeEnabled by model.easyModeEnabled.collectAsStateWithLifecycle()
 
                     // Signal to the system that the initial UI is "fully drawn"
                     // once we've decided whether to show the intro or the main screen.
                     ReportDrawnWhen { true }
 
-                    if (appIntroCompleted) {
-                        MainScreen()
-                    } else {
-                        val introViewModel = koinViewModel<IntroViewModel>()
-                        AppIntroductionScreen(onDone = { model.onAppIntroCompleted() }, viewModel = introViewModel)
+                    when {
+                        !appIntroCompleted -> {
+                            val introViewModel = koinViewModel<IntroViewModel>()
+                            AppIntroductionScreen(onDone = { model.onAppIntroCompleted() }, viewModel = introViewModel)
+                        }
+
+                        easyModeEnabled -> EasyMainScreen()
+
+                        else -> MainScreen()
                     }
                 }
             }

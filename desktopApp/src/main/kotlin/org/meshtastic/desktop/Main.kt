@@ -97,6 +97,7 @@ import org.meshtastic.desktop.data.DesktopPreferencesDataSource
 import org.meshtastic.desktop.di.desktopModule
 import org.meshtastic.desktop.di.desktopPlatformModule
 import org.meshtastic.desktop.notification.DesktopOS
+import org.meshtastic.desktop.ui.DesktopEasyMainScreen
 import org.meshtastic.desktop.ui.DesktopMainScreen
 import java.awt.Desktop
 import java.util.Locale
@@ -351,13 +352,18 @@ private fun ApplicationScope.MeshtasticWindow(
     visible: Boolean,
     onCloseRequest: () -> Unit,
 ) {
+    val easyModeEnabled by uiViewModel.easyModeEnabled.collectAsState()
     val multiBackstack =
         rememberMultiBackstack(
-            // Land on Connections for first-run / no-device-selected; otherwise on Nodes.
-            if (uiViewModel.currentDeviceAddressFlow.value.let { it.isNullOrBlank() || it == "n" }) {
-                TopLevelDestination.Connect.route
-            } else {
-                TopLevelDestination.Nodes.route
+            when {
+                // Easy mode always starts on Chats; the banner surfaces connection problems.
+                uiViewModel.easyModeEnabled.value -> TopLevelDestination.Messages.route
+
+                // Land on Connections for first-run / no-device-selected; otherwise on Nodes.
+                uiViewModel.currentDeviceAddressFlow.value.let { it.isNullOrBlank() || it == "n" } ->
+                    TopLevelDestination.Connect.route
+
+                else -> TopLevelDestination.Nodes.route
             },
         )
 
@@ -373,7 +379,13 @@ private fun ApplicationScope.MeshtasticWindow(
 
         CoilImageLoaderSetup()
         CompositionLocalProvider(LocalEventBranding provides eventEdition) {
-            AppTheme(darkTheme = isDarkTheme) { DesktopMainScreen(uiViewModel, multiBackstack) }
+            AppTheme(darkTheme = isDarkTheme) {
+                if (easyModeEnabled) {
+                    DesktopEasyMainScreen(uiViewModel, multiBackstack)
+                } else {
+                    DesktopMainScreen(uiViewModel, multiBackstack)
+                }
+            }
         }
     }
 }

@@ -74,21 +74,7 @@ fun MainScreen() {
     val scrollToTopEvents = viewModel.scrollToTopEventFlow
 
     AndroidAppVersionCheck(viewModel)
-
-    val lockdownState by viewModel.lockdownState.collectAsStateWithLifecycle()
-    LockdownDialog(
-        lockdownState = lockdownState,
-        onSubmit = { passphrase, boots, hours, sessionMinutes ->
-            viewModel.sendLockdownUnlock(passphrase, boots, hours, sessionMinutes * SECONDS_PER_MINUTE)
-        },
-        onDisconnect = { viewModel.setDeviceAddress("n") },
-    )
-    // Auto-disconnect when firmware acknowledges Lock Now
-    LaunchedEffect(lockdownState) {
-        if (lockdownState is LockdownState.LockNowAcknowledged) {
-            viewModel.setDeviceAddress("n")
-        }
-    }
+    AndroidLockdownHandler(viewModel)
 
     MeshtasticAppShell(multiBackstack = multiBackstack, uiViewModel = viewModel, hostModifier = Modifier) {
         MeshtasticNavigationSuite(
@@ -128,9 +114,28 @@ fun MainScreen() {
 /** True when no device address is persisted, or the address is the "none" sentinel (`"n"`). */
 private fun String?.isNullOrSelectedNone(): Boolean = isNullOrBlank() || this == "n"
 
+/** Lockdown unlock dialog + auto-disconnect on Lock Now, shared by the full and Easy shells. */
+@Composable
+internal fun AndroidLockdownHandler(viewModel: UIViewModel) {
+    val lockdownState by viewModel.lockdownState.collectAsStateWithLifecycle()
+    LockdownDialog(
+        lockdownState = lockdownState,
+        onSubmit = { passphrase, boots, hours, sessionMinutes ->
+            viewModel.sendLockdownUnlock(passphrase, boots, hours, sessionMinutes * SECONDS_PER_MINUTE)
+        },
+        onDisconnect = { viewModel.setDeviceAddress("n") },
+    )
+    // Auto-disconnect when firmware acknowledges Lock Now
+    LaunchedEffect(lockdownState) {
+        if (lockdownState is LockdownState.LockNowAcknowledged) {
+            viewModel.setDeviceAddress("n")
+        }
+    }
+}
+
 @Composable
 @Suppress("LongMethod", "CyclomaticComplexMethod")
-private fun AndroidAppVersionCheck(viewModel: UIViewModel) {
+internal fun AndroidAppVersionCheck(viewModel: UIViewModel) {
     val connectionState by viewModel.connectionState.collectAsStateWithLifecycle()
     val myNodeInfo by viewModel.myNodeInfo.collectAsStateWithLifecycle()
 

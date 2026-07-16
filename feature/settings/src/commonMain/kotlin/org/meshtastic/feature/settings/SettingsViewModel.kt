@@ -160,6 +160,12 @@ class SettingsViewModel(
         uiPrefs.setAppIntroCompleted(false)
     }
 
+    val easyModeEnabled: StateFlow<Boolean> = uiPrefs.easyModeEnabled
+
+    fun setEasyModeEnabled(enabled: Boolean) {
+        uiPrefs.setEasyModeEnabled(enabled)
+    }
+
     fun unlockHiddenFeatures() {
         hiddenFeaturesUnlock.unlock()
     }

@@ -157,6 +157,19 @@ class FakeUiPrefs : UiPrefs {
         eventThemeEnabled.value = enabled
     }
 
+    override val easyModeEnabled = MutableStateFlow(false)
+
+    override fun setEasyModeEnabled(enabled: Boolean) {
+        easyModeEnabled.value = enabled
+    }
+
+    override val pinnedContactKeys = MutableStateFlow(setOf("0^all"))
+
+    override fun setContactPinned(contactKey: String, pinned: Boolean) {
+        pinnedContactKeys.value =
+            if (pinned) pinnedContactKeys.value + contactKey else pinnedContactKeys.value - contactKey
+    }
+
     override val bleAutoScan = MutableStateFlow(false)
 
     override fun setBleAutoScan(enabled: Boolean) {

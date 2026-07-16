@@ -76,6 +76,7 @@ import org.meshtastic.core.ui.icon.MeshtasticIcons
 import org.meshtastic.core.ui.icon.PermScanWifi
 import org.meshtastic.core.ui.icon.Wifi
 import org.meshtastic.core.ui.util.rememberShowToastResource
+import org.meshtastic.feature.settings.component.EasyModeSection
 import org.meshtastic.feature.settings.component.ExpressiveSection
 import org.meshtastic.feature.settings.component.HomoglyphSetting
 import org.meshtastic.feature.settings.component.NotificationSection
@@ -208,6 +209,11 @@ fun DesktopSettingsScreen(
                         summary = stringResource(Res.string.device_db_cache_limit_summary),
                     )
                 }
+
+                EasyModeSection(
+                    easyModeEnabled = settingsViewModel.easyModeEnabled.collectAsStateWithLifecycle().value,
+                    onToggleEasyMode = settingsViewModel::setEasyModeEnabled,
+                )
 
                 ExpressiveSection(title = stringResource(Res.string.node_layout_section_title)) {
                     ListItem(

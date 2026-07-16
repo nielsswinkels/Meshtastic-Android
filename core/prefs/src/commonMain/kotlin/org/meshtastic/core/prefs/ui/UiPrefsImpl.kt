@@ -22,6 +22,7 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.core.stringSetPreferencesKey
 import kotlinx.atomicfu.atomic
 import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.coroutines.CoroutineScope
@@ -140,6 +141,27 @@ class UiPrefsImpl(
 
     override fun setEventThemeEnabled(enabled: Boolean) {
         scope.launch { dataStore.edit { it[KEY_EVENT_THEME_ENABLED] = enabled } }
+    }
+
+    override val easyModeEnabled: StateFlow<Boolean> =
+        dataStore.data.map { it[KEY_EASY_MODE_ENABLED] ?: false }.stateIn(scope, SharingStarted.Eagerly, false)
+
+    override fun setEasyModeEnabled(enabled: Boolean) {
+        scope.launch { dataStore.edit { it[KEY_EASY_MODE_ENABLED] = enabled } }
+    }
+
+    override val pinnedContactKeys: StateFlow<Set<String>> =
+        dataStore.data
+            .map { it[KEY_PINNED_CONTACT_KEYS] ?: DEFAULT_PINNED_CONTACT_KEYS }
+            .stateIn(scope, SharingStarted.Eagerly, DEFAULT_PINNED_CONTACT_KEYS)
+
+    override fun setContactPinned(contactKey: String, pinned: Boolean) {
+        scope.launch {
+            dataStore.edit {
+                val current = it[KEY_PINNED_CONTACT_KEYS] ?: DEFAULT_PINNED_CONTACT_KEYS
+                it[KEY_PINNED_CONTACT_KEYS] = if (pinned) current + contactKey else current - contactKey
+            }
+        }
     }
 
     override val bleAutoScan: StateFlow<Boolean> =
@@ -276,6 +298,11 @@ class UiPrefsImpl(
         val KEY_HAS_SHOWN_NOT_PAIRED_WARNING_PREF = booleanPreferencesKey("has_shown_not_paired_warning")
         val KEY_SHOW_QUICK_CHAT_PREF = booleanPreferencesKey("show-quick-chat")
         val KEY_EVENT_THEME_ENABLED = booleanPreferencesKey("event-theme-enabled")
+        val KEY_EASY_MODE_ENABLED = booleanPreferencesKey("easy-mode-enabled")
+        val KEY_PINNED_CONTACT_KEYS = stringSetPreferencesKey("pinned-contact-keys")
+
+        /** The primary public channel starts pinned so it never gets lost among direct messages. */
+        val DEFAULT_PINNED_CONTACT_KEYS = setOf("0^all")
 
         val KEY_APP_INTRO_COMPLETED = booleanPreferencesKey("app_intro_completed")
         val KEY_THEME = intPreferencesKey("theme")

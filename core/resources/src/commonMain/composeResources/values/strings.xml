@@ -183,6 +183,7 @@
     <string name="channel_url">Channel URL</string>
     <string name="channel_utilization">ChUtil</string>
     <string name="channels">Channels</string>
+    <string name="chats">Chats</string>
     <!-- CHIRPY -->
     <string name="chirpy">Chirpy</string>
     <string name="chirpy_assistant_title">Chirpy Assistant</string>
@@ -548,6 +549,20 @@
     <string name="duplicated_public_key_title">Duplicate Public Key Detected</string>
     <string name="dynamic">Dynamic</string>
     <string name="easily_set_up_private_mesh_networks">Easily set up private mesh networks for secure and reliable communication in remote areas.</string>
+    <!-- EASY -->
+    <string name="easy_disconnected_body">Check that it\'s turned on and nearby.</string>
+    <string name="easy_disconnected_title">Your Meshtastic device isn\'t connected</string>
+    <string name="easy_mode">Easy mode</string>
+    <string name="easy_mode_description">A simplified app with just chats, people, and the map. Great for family and friends who don\'t care about the technical details.</string>
+    <string name="easy_mode_enable_message">The app will show only chats, people, the map, and a few settings. You can switch back at the bottom of Easy mode\'s settings.</string>
+    <string name="easy_mode_enable_title">Switch to Easy mode?</string>
+    <string name="easy_no_people_yet">No one has been heard on the mesh yet. People will appear here automatically.</string>
+    <string name="easy_open_connection_settings">Connection settings</string>
+    <string name="easy_switch_to_advanced">Switch to advanced mode</string>
+    <string name="easy_switch_to_advanced_message">The advanced app shows every technical setting and detail. You can come back to Easy mode from its settings.</string>
+    <string name="easy_your_device">Your device</string>
+    <string name="easy_your_name">Your name</string>
+    <string name="easy_your_name_hint">The name other people on the mesh see</string>
     <string name="echo_enabled">Echo enabled</string>
     <string name="edit">Edit</string>
     <string name="edit_custom_tile_source">Edit Network Tile Source</string>
@@ -849,6 +864,7 @@
     <string name="label_very_long_slow">Very Long Range - Slow</string>
     <string name="last_heard_filter_label">Filter by Last Heard time: %1$s</string>
     <string name="last_position_update">Last position update</string>
+    <string name="last_seen">Last seen</string>
     <string name="latest_alpha_firmware">Latest alpha</string>
     <string name="latest_stable_firmware">Latest stable</string>
     <string name="latitude">Latitude</string>
@@ -1089,6 +1105,7 @@
     <string name="must_set_region">You must set a region!</string>
     <string name="must_update">You must update this application on the app store (or Github). It is too old to talk to this radio firmware.  Please read our <a href="https://meshtastic.org/docs/software/android/installation">docs</a> on this topic.</string>
     <!-- MUTE -->
+    <string name="mute">Mute</string>
     <string name="mute_1_week">1 week</string>
     <string name="mute_8_hours">8 hours</string>
     <string name="mute_add">Mute notifications for '%1$s'?</string>
@@ -1110,7 +1127,9 @@
     <string name="neighbor_info_enabled">Neighbor Info enabled</string>
     <string name="network">Network</string>
     <string name="network_layer_url_hint" translatable="false">https://example.com/map.kml or .geojson</string>
+    <!-- NEW -->
     <string name="new_channel_rcvd">New Channel URL received</string>
+    <string name="new_chat">New chat</string>
     <string name="new_messages_below">New messages below</string>
     <string name="new_node_seen">New Node Seen: %1$s</string>
     <string name="new_nodes">New Nodes</string>
@@ -1125,6 +1144,7 @@
     <string name="no_files_manifested">No files manifested.</string>
     <string name="no_local_stats">No Stats Available</string>
     <string name="no_map_layers_loaded">No map layers loaded.</string>
+    <string name="no_messages_yet">No messages yet</string>
     <string name="no_network_devices_found">No network devices found</string>
     <string name="no_network_devices_hint">Ensure you're connected to the same network as the device.</string>
     <string name="no_network_devices_seen">No network devices seen</string>
@@ -1254,10 +1274,12 @@
     <string name="paxcounter">Paxcounter</string>
     <string name="paxcounter_config">Paxcounter Config</string>
     <string name="paxcounter_enabled">Paxcounter enabled</string>
+    <string name="people">People</string>
     <string name="periodic_position_broadcast">Periodic position broadcast</string>
     <string name="permission_missing_31">Meshtastic needs "Nearby devices" permissions enabled to find and connect to devices via Bluetooth. You can disable when not in use.</string>
     <string name="phone_location">Phone Location</string>
     <string name="phone_location_description">Meshtastic uses your phone's location to enable a number of features. You can update your location permissions at any time from settings.</string>
+    <string name="pin">Pin</string>
     <string name="play">Play</string>
     <plurals name="plurals_hours">
         <item quantity="one">%1$d hour</item>
@@ -1317,6 +1339,7 @@
     <string name="psk">PSK</string>
     <string name="pt_BR" translatable="false">Português do Brasil</string>
     <string name="ptt_pin">PTT pin</string>
+    <string name="public_channel">Public channel</string>
     <string name="public_key">Public Key</string>
     <string name="public_key_changed">Public Key Changed</string>
     <string name="qr_code">QR code</string>
@@ -1723,6 +1746,7 @@
     <string name="unmonitored_or_infrastructure">Unmonitored or Infrastructure</string>
     <string name="unmute">Unmute</string>
     <string name="unmute_selected">Unmute selected</string>
+    <string name="unpin">Unpin</string>
     <string name="unrecognized">Unrecognized</string>
     <string name="unset">Unset - 0</string>
     <string name="up_down_select_input_enabled">Up/Down/Select input enabled</string>

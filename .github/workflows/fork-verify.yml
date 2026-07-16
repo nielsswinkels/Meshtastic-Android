@@ -1,0 +1,46 @@
+name: Fork Verify (Claude branches)
+
+# The stock CI workflows are guarded to the upstream meshtastic/Meshtastic-Android
+# repository, so forks get no compile/test feedback. This workflow runs the
+# repository's baseline verification on claude/** branches of the fork.
+
+on:
+  push:
+    branches: [ "claude/**" ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: fork-verify-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    if: github.repository != 'meshtastic/Meshtastic-Android'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7.0.0
+        with:
+          fetch-depth: 0
+          filter: 'blob:none'
+          submodules: true
+
+      - name: Gradle Setup
+        uses: ./.github/actions/gradle-setup
+        with:
+          cache_read_only: 'true'
+          install_jetbrains_jdk: 'true'
+
+      - name: Lint & Static Analysis
+        run: ./gradlew spotlessCheck detekt kmpSmokeCompile -Pci=true --continue
+
+      - name: Assemble Debug
+        run: ./gradlew assembleDebug -Pci=true --continue
+
+      - name: Unit Tests
+        run: ./gradlew test allTests -Pci=true --continue

@@ -44,7 +44,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 import org.meshtastic.core.model.Node
-import org.meshtastic.core.model.util.DistanceUnit
 import org.meshtastic.core.resources.Res
 import org.meshtastic.core.resources.battery
 import org.meshtastic.core.resources.distance
@@ -83,6 +82,7 @@ fun EasyPersonDetailScreen(
     val personFlow = remember(nodeNum, viewModel) { viewModel.person(nodeNum) }
     val person by personFlow.collectAsStateWithLifecycle()
     val ourNode by viewModel.ourNode.collectAsStateWithLifecycle()
+    val displayUnits by viewModel.displayUnits.collectAsStateWithLifecycle()
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
@@ -142,7 +142,7 @@ fun EasyPersonDetailScreen(
                     supportingContent = { Text(formatAgo(node.lastHeard)) },
                 )
 
-                val distance = ourNode?.let { node.distanceStr(it, DistanceUnit.getFromLocale()) }
+                val distance = ourNode?.let { node.distanceStr(it, displayUnits) }
                 if (distance != null) {
                     ListItem(
                         headlineContent = { Text(stringResource(Res.string.distance)) },

@@ -282,6 +282,8 @@ fun EasyConversationScreen(
                     contactKey = contactKey,
                     firstUnreadMessageUuid = firstUnreadMessageUuid,
                     hasUnreadMessages = hasUnreadMessages == true,
+                    // Radio metadata (SNR/RSSI/hops pills) means nothing to Easy mode users.
+                    showTechnicalInfo = false,
                 ),
                 handlers =
                 MessageListHandlers(

@@ -173,6 +173,7 @@ import org.osmdroid.views.overlay.MapEventsOverlay
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.Polygon
 import org.osmdroid.views.overlay.infowindow.InfoWindow
+import org.osmdroid.views.overlay.infowindow.MarkerInfoWindow
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay
 import java.io.File
 import kotlin.math.roundToInt
@@ -426,6 +427,8 @@ fun MapView(
         val nodesWithPosition = nodes.filter { it.validPosition != null }
         val ourNode = mapViewModel.ourNodeInfo.value
         val mapFilterStateValue = mapViewModel.mapFilterStateFlow.value // Access mapFilterState directly
+        // One shared bubble for all node markers (only one is ever open), using the larger-text layout.
+        val nodeInfoWindow = MarkerInfoWindow(R.layout.map_marker_bubble, this)
         return nodesWithPosition.mapNotNull { node ->
             if (mapFilterStateValue.onlyFavorites && !node.isFavorite && !node.equals(ourNode)) {
                 return@mapNotNull null
@@ -442,6 +445,7 @@ fun MapView(
             val nodePosition = GeoPoint(node.latitude, node.longitude)
             MarkerWithLabel(mapView = this, label = "${u.short_name} ${formatAgo(p.time, unknownText, nowText)}")
                 .apply {
+                    infoWindow = nodeInfoWindow
                     id = u.id
                     title = u.long_name
                     snippet =
@@ -648,9 +652,14 @@ fun MapView(
         invalidate()
     }
 
+    // Sampled on scroll events so the compass button roughly tracks two-finger rotation (osmdroid has no
+    // dedicated rotation listener; twisting always pans a little, which fires onScroll).
+    var mapBearing by remember { mutableFloatStateOf(0f) }
+
     val boxOverlayListener =
         object : MapListener {
             override fun onScroll(event: ScrollEvent): Boolean {
+                mapBearing = -event.source.mapOrientation
                 when {
                     downloadRegionBoundingBox != null -> event.source.generateBoxOverlay()
                     geofenceBoxDraft != null -> event.source.generateGeofenceBoxOverlay()
@@ -762,6 +771,12 @@ fun MapView(
             } else {
                 MapControlsOverlay(
                     modifier = Modifier.align(Alignment.TopCenter).padding(top = 8.dp),
+                    bearing = mapBearing,
+                    onCompassClick = {
+                        map.mapOrientation = 0f
+                        mapBearing = 0f
+                        map.invalidate()
+                    },
                     onToggleFilterMenu = { mapFilterExpanded = true },
                     filterDropdownContent = {
                         FdroidMainMapFilterDropdown(

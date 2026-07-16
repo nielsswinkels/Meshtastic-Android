@@ -126,6 +126,7 @@ fun MessageItem(
     isDirectMessage: Boolean = false,
     onTranslate: () -> Unit = {},
     onToggleTranslation: () -> Unit = {},
+    showTechnicalInfo: Boolean = true,
 ) = Column(
     modifier =
     modifier
@@ -326,7 +327,8 @@ fun MessageItem(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(4.dp),
                 ) {
-                    if (!message.fromLocal) {
+                    // Radio metadata pills (signature, SNR/RSSI, hop count) — hidden in Easy mode.
+                    if (showTechnicalInfo && !message.fromLocal) {
                         // XEdDSA is only set on verified broadcasts, never DMs — so this never shows on a DM.
                         if (message.xeddsaSigned) {
                             // Solo icon → equal padding so the pill renders as a circle.

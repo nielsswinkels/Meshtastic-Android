@@ -25,12 +25,15 @@ import org.koin.core.annotation.KoinViewModel
 import org.meshtastic.core.model.Node
 import org.meshtastic.core.model.NodeAddress
 import org.meshtastic.core.model.NodeSortOption
+import org.meshtastic.core.model.util.DistanceUnit
 import org.meshtastic.core.repository.ConnectionStateProvider
 import org.meshtastic.core.repository.NodeRepository
+import org.meshtastic.core.repository.RadioConfigRepository
 import org.meshtastic.core.ui.viewmodel.stateInWhileSubscribed
 import org.meshtastic.feature.node.detail.NodeManagementActions
 import org.meshtastic.feature.node.domain.usecase.GetFilteredNodesUseCase
 import org.meshtastic.feature.node.list.NodeFilterState
+import org.meshtastic.proto.Config.DisplayConfig.DisplayUnits
 
 /**
  * Backs both Easy mode People screens (list + person detail): a friendly, always-recency-sorted view of the node
@@ -41,12 +44,19 @@ class EasyPeopleViewModel(
     private val nodeRepository: NodeRepository,
     getFilteredNodesUseCase: GetFilteredNodesUseCase,
     connectionStateProvider: ConnectionStateProvider,
+    radioConfigRepository: RadioConfigRepository,
     private val nodeManagementActions: NodeManagementActions,
 ) : ViewModel() {
 
     val ourNode: StateFlow<Node?> = nodeRepository.ourNodeInfo
 
     val connectionState = connectionStateProvider.connectionState
+
+    /** Distance units: the radio's Display config wins; the OS locale is only the never-synced fallback. */
+    val displayUnits: StateFlow<DisplayUnits> =
+        radioConfigRepository.localConfigFlow
+            .map { it.display?.units ?: DistanceUnit.getFromLocale() }
+            .stateInWhileSubscribed(initialValue = DistanceUnit.getFromLocale())
 
     /** Everyone else on the mesh: favorites first, then most recently heard. Our own node is not a "person" here. */
     val people: StateFlow<List<Node>> =

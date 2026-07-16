@@ -89,6 +89,7 @@ internal data class MessageListPagedState(
     val filteringDisabled: Boolean = false,
     val searchQuery: String = "",
     val translationAvailable: Boolean = false,
+    val showTechnicalInfo: Boolean = true,
 )
 
 private fun MutableState<Set<Long>>.toggle(uuid: Long) {
@@ -392,6 +393,7 @@ private fun RenderPagedChatMessageRow(
         isDirectMessage = isDirectMessageConversation,
         onTranslate = { handlers.onTranslate(message) },
         onToggleTranslation = { handlers.onToggleTranslation(message) },
+        showTechnicalInfo = state.showTechnicalInfo,
     )
 }
 

@@ -78,11 +78,14 @@ open class BaseMapViewModel(
     val myNodeInfo = nodeRepository.myNodeInfo
 
     /**
-     * OS locale display units (metric/imperial) for distance/altitude/speed formatting across map surfaces. StateFlow
-     * kept for the existing collectAsState call sites; value is a one-time snapshot at construction and does not react
-     * to a mid-session locale change (ViewModel survives config changes).
+     * Display units (metric/imperial) for distance/altitude/speed formatting across map surfaces. The radio's Display
+     * config is the source of truth (what the user explicitly configured); the OS locale's measurement system is only
+     * the fallback while no device config has ever been synced.
      */
-    val displayUnits: StateFlow<DisplayUnits> = MutableStateFlow(DistanceUnit.getFromLocale()).asStateFlow()
+    val displayUnits: StateFlow<DisplayUnits> =
+        radioConfigRepository.localConfigFlow
+            .map { it.display?.units ?: DistanceUnit.getFromLocale() }
+            .stateInWhileSubscribed(initialValue = DistanceUnit.getFromLocale())
 
     val ourNodeInfo = nodeRepository.ourNodeInfo
 

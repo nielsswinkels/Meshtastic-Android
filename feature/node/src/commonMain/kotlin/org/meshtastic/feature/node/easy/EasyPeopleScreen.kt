@@ -45,7 +45,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import org.jetbrains.compose.resources.stringResource
 import org.meshtastic.core.model.Node
-import org.meshtastic.core.model.util.DistanceUnit
 import org.meshtastic.core.resources.Res
 import org.meshtastic.core.resources.easy_no_people_yet
 import org.meshtastic.core.resources.favorite
@@ -55,6 +54,7 @@ import org.meshtastic.core.ui.component.easy.EasyAvatar
 import org.meshtastic.core.ui.icon.Favorite
 import org.meshtastic.core.ui.icon.MeshtasticIcons
 import org.meshtastic.core.ui.util.formatAgo
+import org.meshtastic.proto.Config.DisplayConfig.DisplayUnits
 
 /**
  * Easy mode "People" tab: everyone on the mesh as a friendly contacts list — name, when they were last heard, and how
@@ -70,6 +70,7 @@ fun EasyPeopleScreen(
 ) {
     val people by viewModel.people.collectAsStateWithLifecycle()
     val ourNode by viewModel.ourNode.collectAsStateWithLifecycle()
+    val displayUnits by viewModel.displayUnits.collectAsStateWithLifecycle()
     val listState = rememberLazyListState()
 
     LaunchedEffect(scrollToTopEvents) {
@@ -98,7 +99,12 @@ fun EasyPeopleScreen(
         } else {
             LazyColumn(modifier = Modifier.fillMaxSize().padding(padding), state = listState) {
                 items(people, key = { it.num }) { person ->
-                    EasyPersonRow(person = person, ourNode = ourNode, onClick = { onOpenPerson(person.num) })
+                    EasyPersonRow(
+                        person = person,
+                        ourNode = ourNode,
+                        displayUnits = displayUnits,
+                        onClick = { onOpenPerson(person.num) },
+                    )
                 }
             }
         }
@@ -106,7 +112,13 @@ fun EasyPeopleScreen(
 }
 
 @Composable
-private fun EasyPersonRow(person: Node, ourNode: Node?, onClick: () -> Unit, modifier: Modifier = Modifier) {
+private fun EasyPersonRow(
+    person: Node,
+    ourNode: Node?,
+    displayUnits: DisplayUnits,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
     Row(
         modifier = modifier.fillMaxWidth().clickable(onClick = onClick).padding(horizontal = 16.dp, vertical = 10.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -133,7 +145,7 @@ private fun EasyPersonRow(person: Node, ourNode: Node?, onClick: () -> Unit, mod
                 }
             }
             Text(
-                text = personSubtitle(person, ourNode),
+                text = personSubtitle(person, ourNode, displayUnits),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 maxLines = 1,
@@ -145,8 +157,8 @@ private fun EasyPersonRow(person: Node, ourNode: Node?, onClick: () -> Unit, mod
 
 /** "5 min ago · 2.4 km" — the two facts a non-technical user actually cares about. */
 @Composable
-private fun personSubtitle(person: Node, ourNode: Node?): String {
+private fun personSubtitle(person: Node, ourNode: Node?, displayUnits: DisplayUnits): String {
     val lastSeen = formatAgo(person.lastHeard)
-    val distance = ourNode?.let { person.distanceStr(it, DistanceUnit.getFromLocale()) }
+    val distance = ourNode?.let { person.distanceStr(it, displayUnits) }
     return if (distance != null) "$lastSeen · $distance" else lastSeen
 }

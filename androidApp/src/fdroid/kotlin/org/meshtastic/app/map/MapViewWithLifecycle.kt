@@ -36,6 +36,7 @@ import org.osmdroid.util.BoundingBox
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.CustomZoomButtonsController
 import org.osmdroid.views.MapView
+import org.osmdroid.views.overlay.gestures.RotationGestureOverlay
 
 private const val MIN_ZOOM_LEVEL = 1.5
 private const val MAX_ZOOM_LEVEL = 20.0
@@ -93,6 +94,8 @@ internal fun rememberMapViewWithLifecycle(
             setTileSource(tileSource)
             isVerticalMapRepetitionEnabled = false // disables map repetition
             setMultiTouchControls(true)
+            // Two-finger rotation, matching the google-flavor map; the compass button resets to north-up.
+            overlays.add(RotationGestureOverlay(this).apply { isEnabled = true })
             val bounds = overlayManager.tilesOverlay.bounds // bounds scrollable map
             setScrollableAreaLimitLatitude(bounds.actualNorth, bounds.actualSouth, 0)
             // scales the map tiles to the display density of the screen

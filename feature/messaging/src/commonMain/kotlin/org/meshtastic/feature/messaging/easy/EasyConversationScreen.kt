@@ -46,6 +46,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -57,11 +58,15 @@ import org.meshtastic.core.model.ContactKey
 import org.meshtastic.core.model.NodeAddress
 import org.meshtastic.core.model.util.getChannel
 import org.meshtastic.core.resources.Res
+import org.meshtastic.core.resources.easy_airtime_hint
+import org.meshtastic.core.resources.easy_mesh_busy_hint
 import org.meshtastic.core.resources.navigate_back
 import org.meshtastic.core.resources.public_channel
 import org.meshtastic.core.resources.unknown_channel
+import org.meshtastic.core.ui.component.easy.AIRTIME_WARN_PERCENT
 import org.meshtastic.core.ui.component.easy.EasyAvatar
 import org.meshtastic.core.ui.component.easy.EasyAvatarIcon
+import org.meshtastic.core.ui.component.easy.MESH_BUSY_CHANNEL_UTIL_PERCENT
 import org.meshtastic.core.ui.icon.ArrowBack
 import org.meshtastic.core.ui.icon.Groups
 import org.meshtastic.core.ui.icon.MeshtasticIcons
@@ -246,6 +251,28 @@ fun EasyConversationScreen(
         },
         bottomBar = {
             Column {
+                // Just-in-time airtime hint: only when the radio's sending budget is nearly spent or the
+                // shared channel is congested — invisible the rest of the time.
+                val airtimeHintRes =
+                    ourNode?.deviceMetrics?.let { metrics ->
+                        when {
+                            (metrics.air_util_tx ?: 0f) >= AIRTIME_WARN_PERCENT -> Res.string.easy_airtime_hint
+
+                            (metrics.channel_utilization ?: 0f) >= MESH_BUSY_CHANNEL_UTIL_PERCENT ->
+                                Res.string.easy_mesh_busy_hint
+
+                            else -> null
+                        }
+                    }
+                airtimeHintRes?.let { hint ->
+                    Text(
+                        text = stringResource(hint),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 2.dp),
+                    )
+                }
                 ReplySnippet(
                     originalMessage = originalMessage,
                     onClearReply = { replyingToPacketId = null },

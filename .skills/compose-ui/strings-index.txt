@@ -526,9 +526,16 @@ duplicated_public_key_title
 dynamic
 easily_set_up_private_mesh_networks
 ### EASY ###
+easy_airtime
+easy_airtime_almost
+easy_airtime_exhausted
+easy_airtime_hint
+easy_airtime_low
+easy_airtime_plenty
 easy_disconnected_body
 easy_disconnected_title
 easy_go_back
+easy_mesh_busy_hint
 easy_mode
 easy_mode_description
 easy_mode_enable_message

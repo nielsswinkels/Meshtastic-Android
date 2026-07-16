@@ -550,9 +550,16 @@
     <string name="dynamic">Dynamic</string>
     <string name="easily_set_up_private_mesh_networks">Easily set up private mesh networks for secure and reliable communication in remote areas.</string>
     <!-- EASY -->
+    <string name="easy_airtime">Sending budget</string>
+    <string name="easy_airtime_almost">Almost used up</string>
+    <string name="easy_airtime_exhausted">Used up — sending pauses for a while</string>
+    <string name="easy_airtime_hint">You have sent a lot recently — sending may pause soon.</string>
+    <string name="easy_airtime_low">Getting low</string>
+    <string name="easy_airtime_plenty">Plenty left</string>
     <string name="easy_disconnected_body">Check that it's turned on and nearby.</string>
     <string name="easy_disconnected_title">Your Meshtastic device isn't connected</string>
     <string name="easy_go_back">Go back</string>
+    <string name="easy_mesh_busy_hint">The mesh is busy right now — messages may be slow.</string>
     <string name="easy_mode">Easy mode</string>
     <string name="easy_mode_description">A simplified app with just chats, people, and the map. Great for family and friends who don't care about the technical details.</string>
     <string name="easy_mode_enable_message">The app will show only chats, people, the map, and a few settings. You can switch back at the bottom of Easy mode's settings.</string>

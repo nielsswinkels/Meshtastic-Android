@@ -16,6 +16,7 @@
  */
 package org.meshtastic.feature.settings.easy
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -24,6 +25,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -46,6 +48,7 @@ import org.meshtastic.core.resources.cancel
 import org.meshtastic.core.resources.connected
 import org.meshtastic.core.resources.connected_sleeping
 import org.meshtastic.core.resources.connecting
+import org.meshtastic.core.resources.easy_airtime
 import org.meshtastic.core.resources.easy_open_connection_settings
 import org.meshtastic.core.resources.easy_switch_to_advanced
 import org.meshtastic.core.resources.easy_switch_to_advanced_message
@@ -60,7 +63,9 @@ import org.meshtastic.core.resources.short_name
 import org.meshtastic.core.ui.component.ListItem
 import org.meshtastic.core.ui.component.MaterialBatteryInfo
 import org.meshtastic.core.ui.component.MeshtasticDialog
+import org.meshtastic.core.ui.component.easy.EasyAirtimeLevel
 import org.meshtastic.core.ui.component.easy.EasyAvatar
+import org.meshtastic.core.ui.component.easy.airtimeBudgetFraction
 import org.meshtastic.core.ui.viewmodel.ConnectionStatus
 import org.meshtastic.core.ui.viewmodel.ConnectionsViewModel
 import org.meshtastic.feature.settings.SettingsViewModel
@@ -123,6 +128,7 @@ fun EasySettingsScreen(
                         }
                     }
                 }
+                EasyAirtimeRow(airUtilTx = ourNode?.deviceMetrics?.air_util_tx)
                 ListItem(text = stringResource(Res.string.easy_open_connection_settings), onClick = onOpenConnections)
             }
 
@@ -180,6 +186,31 @@ fun EasySettingsScreen(
             },
             dismissTextRes = Res.string.cancel,
             onDismiss = { showAdvancedDialog = false },
+        )
+    }
+}
+
+/**
+ * "Sending budget" in plain words: how much of the radio's hourly transmit airtime is used, measured against the
+ * duty-cycle cap. Hidden until the radio has reported any telemetry.
+ */
+@Composable
+private fun EasyAirtimeRow(airUtilTx: Float?) {
+    if (airUtilTx == null || airUtilTx <= 0f) return
+    val level = EasyAirtimeLevel.from(airUtilTx)
+    Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp)) {
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+            Text(text = stringResource(Res.string.easy_airtime), style = MaterialTheme.typography.bodyLarge)
+            Text(
+                text = stringResource(level.labelRes),
+                style = MaterialTheme.typography.bodyMedium,
+                color = level.color(),
+            )
+        }
+        LinearProgressIndicator(
+            progress = { airtimeBudgetFraction(airUtilTx) },
+            color = level.color(),
+            modifier = Modifier.fillMaxWidth().padding(top = 6.dp),
         )
     }
 }

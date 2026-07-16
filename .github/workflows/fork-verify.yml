@@ -9,8 +9,10 @@ on:
     branches: [ "claude/**" ]
   workflow_dispatch:
 
+# contents: write is needed by the "Publish APKs" step to maintain the
+# easy-mode-latest rolling release; everything else only reads.
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: fork-verify-${{ github.ref }}
@@ -55,3 +57,29 @@ jobs:
 
       - name: Unit Tests
         run: ./gradlew test allTests -Pci=true --continue
+
+      # Phone-friendly downloads: artifacts are always zipped, so publish the two
+      # useful fdroid debug APKs as plain .apk assets on a rolling pre-release.
+      # Stable links (survive re-publishing):
+      #   https://github.com/<repo>/releases/download/easy-mode-latest/meshtastic-easy-universal.apk
+      #   https://github.com/<repo>/releases/download/easy-mode-latest/meshtastic-easy-arm64.apk
+      # Runs after tests so only fully green builds are released.
+      - name: Publish APKs to rolling release
+        if: success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -eu
+          apk_dir=androidApp/build/outputs/apk/fdroid/debug
+          mkdir -p release-apks
+          cp "$apk_dir"/*-universal-*.apk release-apks/meshtastic-easy-universal.apk
+          cp "$apk_dir"/*-arm64-v8a-*.apk release-apks/meshtastic-easy-arm64.apk
+          notes="Debug build of ${GITHUB_SHA::7} on $(date -u '+%Y-%m-%d %H:%M') UTC.
+          Install meshtastic-easy-universal.apk (works on every phone); meshtastic-easy-arm64.apk is a smaller alternative for most modern phones."
+          gh release delete easy-mode-latest --cleanup-tag --yes || true
+          gh release create easy-mode-latest \
+            --target "$GITHUB_SHA" \
+            --prerelease \
+            --title "Easy mode — latest build" \
+            --notes "$notes"
+          gh release upload easy-mode-latest release-apks/*.apk --clobber

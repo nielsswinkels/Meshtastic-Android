@@ -42,5 +42,16 @@ jobs:
       - name: Assemble Debug
         run: ./gradlew assembleDebug -Pci=true --continue
 
+      # Installable debug APKs. The fdroid flavor is the one to sideload: it needs no
+      # API keys and its maps are OSM-based. Debug application IDs are suffixed
+      # (com.geeksville.mesh.<flavor>.debug) so they install alongside the Play Store app.
+      - name: Upload debug APKs
+        if: success()
+        uses: actions/upload-artifact@v7
+        with:
+          name: debug-apks
+          path: androidApp/build/outputs/apk/**/*.apk
+          retention-days: 30
+
       - name: Unit Tests
         run: ./gradlew test allTests -Pci=true --continue

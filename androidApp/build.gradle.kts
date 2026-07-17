@@ -68,6 +68,18 @@ configure<ApplicationExtension> {
             storeFile = keystoreProperties["storeFile"]?.let { file(it) }
             storePassword = keystoreProperties["storePassword"] as String?
         }
+        // Debug builds sign with the checked-in keystore (standard Android debug credentials,
+        // not a secret) so APKs from ephemeral CI runners all share one signature and can
+        // update each other on-device instead of failing with a package conflict.
+        val forkDebugKeystore = layout.projectDirectory.file("fork-debug.keystore").asFile
+        if (forkDebugKeystore.exists()) {
+            getByName("debug") {
+                storeFile = forkDebugKeystore
+                storePassword = "android"
+                keyAlias = "androiddebugkey"
+                keyPassword = "android"
+            }
+        }
     }
     defaultConfig {
         applicationId = configProperties.getProperty("APPLICATION_ID")
